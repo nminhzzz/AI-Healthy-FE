@@ -1,65 +1,91 @@
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link';
 
-const aboutLinks = [
-  { label: 'Giới thiệu', href: '/about' },
-  { label: 'Blog', href: '/blog' },
+const exploreLinks = [
+  { label: 'Vitamins & Khoáng chất', href: '/products?category=vitamins' },
+  { label: 'Dầu cá & Omega', href: '/products?category=omega' },
+  { label: 'Dinh dưỡng thể thao', href: '/products?category=sports' },
+  { label: 'Chăm sóc cá nhân', href: '/products?category=beauty' },
+  { label: 'Sức khỏe đường ruột', href: '/products?category=digestion' },
+];
+
+const supportLinks = [
+  { label: 'Trung tâm trợ giúp (FAQs)', href: '/faq' },
+  { label: 'Hướng dẫn mua hàng', href: '/guide' },
+  { label: 'Chính sách vận chuyển', href: '/shipping-policy' },
+  { label: 'Chính sách hoàn tiền & đổi trả', href: '/return-policy' },
+  { label: 'Chính sách bảo mật', href: '/privacy' },
+];
+
+const companyLinks = [
+  { label: 'Giới thiệu HealthShop AI', href: '/about' },
+  { label: 'Ứng dụng di động', href: '/mobile-app' },
+  { label: 'Cộng đồng & Đánh giá', href: '/reviews' },
   { label: 'Tuyển dụng', href: '/careers' },
   { label: 'Liên hệ', href: '/contact' },
 ];
 
-const supportLinks = [
-  { label: 'Hướng dẫn mua hàng', href: '/guide' },
-  { label: 'Chính sách đổi trả', href: '/return-policy' },
-  { label: 'Chính sách bảo mật', href: '/privacy' },
-  { label: 'FAQ', href: '/faq' },
-];
-
 export default function Footer() {
-  return (
-    <footer className="relative mt-auto border-t border-slate-800 bg-slate-900">
-      {/* Top gradient border */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-500 to-transparent" />
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
 
-      {/* Main content */}
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email.trim()) {
+      setSubscribed(true);
+      setEmail('');
+      setTimeout(() => setSubscribed(false), 5000);
+    }
+  };
+
+  return (
+    <footer className="relative mt-auto bg-slate-50 text-slate-600">
+
+      {/* Main Footer Links */}
       <div className="mx-auto max-w-7xl px-4 pb-8 pt-16 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Column 1: Brand */}
-          <div className="sm:col-span-2 lg:col-span-1">
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+          
+          {/* Column 1: Brand Info */}
+          <div className="sm:col-span-2 lg:col-span-2 space-y-6">
             <Link href="/" className="group inline-flex items-center gap-2">
-              <span className="text-2xl transition-transform duration-300 group-hover:scale-110">🌿</span>
-              <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-xl font-bold text-transparent">
+              <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-2xl font-black tracking-tight text-transparent">
                 HealthShop AI
               </span>
             </Link>
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-slate-400">
-              Nền tảng mua sắm sản phẩm sức khỏe thông minh, được hỗ trợ bởi AI để
-              tư vấn cá nhân hóa. Cam kết sản phẩm chính hãng, giao hàng nhanh
-              toàn quốc.
+            
+            <p className="max-w-sm text-sm leading-relaxed text-slate-500">
+              Nền tảng thương mại điện tử thực phẩm chức năng hàng đầu Việt Nam. Được tích hợp trợ lý AI thông minh tư vấn lộ trình chăm sóc sức khỏe cá nhân hóa 24/7.
             </p>
-            {/* Trust badges */}
-            <div className="mt-5 flex items-center gap-3">
-              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400 ring-1 ring-emerald-500/20">
-                ✓ Chính hãng 100%
-              </span>
-              <span className="inline-flex items-center gap-1 rounded-full bg-teal-500/10 px-3 py-1 text-xs font-medium text-teal-400 ring-1 ring-teal-500/20">
-                ✓ AI Tư vấn
-              </span>
+
+            {/* Quality Seals / Trust badges */}
+            <div className="flex flex-wrap gap-2 pt-2">
+              <div className="flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1 text-xs font-semibold text-emerald-700 shadow-sm">
+                100% Chính Hãng
+              </div>
+              <div className="flex items-center gap-1.5 rounded-full bg-teal-50 px-3.5 py-1 text-xs font-semibold text-teal-700 shadow-sm">
+                Kiểm Định FDA/GMP
+              </div>
+              <div className="flex items-center gap-1.5 rounded-full bg-[#f36b21]/10 px-3.5 py-1 text-xs font-semibold text-[#f36b21] shadow-sm">
+                Trợ Lý AI Tư Vấn
+              </div>
             </div>
           </div>
 
-          {/* Column 2: About */}
+          {/* Column 2: Explore */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-white">
-              Về chúng tôi
+            <h3 className="text-xs font-black uppercase tracking-wider text-slate-800">
+              Khám Phá
             </h3>
             <ul className="mt-4 space-y-3">
-              {aboutLinks.map((link) => (
+              {exploreLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="group flex items-center text-sm text-slate-400 transition-colors duration-200 hover:text-emerald-400"
+                    className="group flex items-center text-sm text-slate-500 transition-colors duration-200 hover:text-emerald-600"
                   >
-                    <span className="mr-2 inline-block h-1 w-1 rounded-full bg-slate-600 transition-all duration-200 group-hover:w-2 group-hover:bg-emerald-400" />
+                    <span className="mr-2 inline-block h-1 w-1 rounded-full bg-slate-300 transition-all duration-200 group-hover:w-2 group-hover:bg-emerald-500" />
                     {link.label}
                   </Link>
                 </li>
@@ -67,19 +93,19 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 3: Support */}
+          {/* Column 3: Customer Support */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-white">
-              Hỗ trợ
+            <h3 className="text-xs font-black uppercase tracking-wider text-slate-800">
+              Hỗ Trợ
             </h3>
             <ul className="mt-4 space-y-3">
               {supportLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="group flex items-center text-sm text-slate-400 transition-colors duration-200 hover:text-emerald-400"
+                    className="group flex items-center text-sm text-slate-500 transition-colors duration-200 hover:text-emerald-600"
                   >
-                    <span className="mr-2 inline-block h-1 w-1 rounded-full bg-slate-600 transition-all duration-200 group-hover:w-2 group-hover:bg-emerald-400" />
+                    <span className="mr-2 inline-block h-1 w-1 rounded-full bg-slate-300 transition-all duration-200 group-hover:w-2 group-hover:bg-emerald-500" />
                     {link.label}
                   </Link>
                 </li>
@@ -87,63 +113,108 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 4: Contact */}
+          {/* Column 4: Company Links */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-white">
-              Liên hệ
+            <h3 className="text-xs font-black uppercase tracking-wider text-slate-800">
+              Về Chúng Tôi
             </h3>
-            <ul className="mt-4 space-y-4">
-              <li className="flex items-start gap-3 text-sm text-slate-400">
-                <svg className="mt-0.5 h-5 w-5 shrink-0 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-                </svg>
-                <span>support@healthshop.ai</span>
-              </li>
-              <li className="flex items-start gap-3 text-sm text-slate-400">
-                <svg className="mt-0.5 h-5 w-5 shrink-0 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
-                </svg>
-                <span>1900 xxxx xx</span>
-              </li>
-              <li className="flex items-start gap-3 text-sm text-slate-400">
-                <svg className="mt-0.5 h-5 w-5 shrink-0 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-                </svg>
-                <span>123 Nguyễn Huệ, Q.1, TP.HCM</span>
-              </li>
+            <ul className="mt-4 space-y-3">
+              {companyLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="group flex items-center text-sm text-slate-500 transition-colors duration-200 hover:text-emerald-600"
+                  >
+                    <span className="mr-2 inline-block h-1 w-1 rounded-full bg-slate-300 transition-all duration-200 group-hover:w-2 group-hover:bg-emerald-500" />
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
+          </div>
+
+          {/* Column 5: Newsletter SignUp */}
+          <div className="sm:col-span-2 md:col-span-1">
+            <h3 className="text-xs font-black uppercase tracking-wider text-slate-800">
+              Đăng Ký Nhận Tin
+            </h3>
+            <p className="mt-4 text-xs leading-relaxed text-slate-500">
+              Đăng ký để nhận voucher giảm giá 10% cho đơn hàng đầu tiên và thông tin ưu đãi sức khỏe mới nhất từ AI.
+            </p>
+            <form onSubmit={handleSubscribe} className="mt-4 space-y-2">
+              <div className="relative">
+                <input
+                  type="email"
+                  required
+                  placeholder="Email của bạn..."
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full rounded-full bg-white border border-slate-200 px-4 py-2 text-xs text-slate-800 placeholder-slate-400 outline-none transition-all duration-300 focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/30"
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold py-2 px-4 transition-all duration-200 shadow-md shadow-emerald-500/10 active:scale-95"
+              >
+                {subscribed ? '✓ ĐÃ ĐĂNG KÝ!' : 'ĐĂNG KÝ NGAY'}
+              </button>
+            </form>
+          </div>
+
+        </div>
+
+        {/* Middle Line: Payment Partners & Contacts */}
+        <div className="mt-12 pt-8 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between border-t border-slate-200/50">
+          {/* Payment Methods */}
+          <div className="space-y-2">
+            <span className="text-xs font-black text-slate-700 uppercase tracking-wider block">Đối tác thanh toán bảo mật</span>
+            <div className="flex flex-wrap gap-2 items-center">
+              <div className="bg-white px-3 py-1 rounded-md text-[10px] font-bold text-slate-655 text-slate-600 border border-slate-200/80">MoMo</div>
+              <div className="bg-white px-3 py-1 rounded-md text-[10px] font-bold text-slate-655 text-slate-600 border border-slate-200/80">VNPAY</div>
+              <div className="bg-white px-3 py-1 rounded-md text-[10px] font-bold text-slate-655 text-slate-600 border border-slate-200/80">Visa</div>
+              <div className="bg-white px-3 py-1 rounded-md text-[10px] font-bold text-slate-655 text-slate-600 border border-slate-200/80">MasterCard</div>
+              <div className="bg-white px-3 py-1 rounded-md text-[10px] font-bold text-slate-655 text-slate-600 border border-slate-200/80">COD (Tiền mặt)</div>
+            </div>
+          </div>
+
+          {/* Hotlines / Support contacts */}
+          <div className="flex flex-wrap gap-6 text-xs text-slate-550 text-slate-500">
+            <div className="flex items-center gap-2">
+              <span className="text-emerald-700 font-bold">Hotline:</span>
+              <a href="tel:19008888" className="hover:text-emerald-600 font-bold transition-colors">1900 8888</a>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-emerald-700 font-bold">Email hỗ trợ:</span>
+              <a href="mailto:support@healthshop.ai" className="hover:text-emerald-600 font-bold transition-colors">support@healthshop.ai</a>
+            </div>
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-slate-800 pt-8 sm:flex-row">
-          <p className="text-sm text-slate-500">
-            © 2024 HealthShop AI. Tất cả quyền được bảo lưu.
+        {/* Bottom Bar: Copyright & Socials */}
+        <div className="mt-8 pt-8 flex flex-col items-center justify-between gap-4 sm:flex-row border-t border-slate-200/50">
+          <p className="text-xs text-slate-500 text-center sm:text-left">
+            © {new Date().getFullYear()} HealthShop AI. Tất cả quyền được bảo lưu. Thiết kế và vận hành chuyên nghiệp lấy cảm hứng từ iHerb.
           </p>
 
-          {/* Social icons */}
-          <div className="flex items-center gap-3">
-            {['Facebook', 'Instagram', 'YouTube', 'TikTok'].map((social) => {
-              const urls: Record<string, string> = {
-                Facebook: 'https://facebook.com',
-                Instagram: 'https://instagram.com',
-                YouTube: 'https://youtube.com',
-                TikTok: 'https://tiktok.com',
-              };
-              return (
-                <a
-                  key={social}
-                  href={urls[social] || 'https://google.com'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={social}
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-800 text-slate-400 ring-1 ring-slate-700/50 transition-all duration-200 hover:bg-emerald-500/10 hover:text-emerald-400 hover:ring-emerald-500/30"
-                >
-                  <span className="text-xs font-bold">{social[0]}</span>
-                </a>
-              );
-            })}
+          {/* Social Icons */}
+          <div className="flex items-center gap-2">
+            {[
+              { name: 'Facebook', url: 'https://facebook.com', label: 'FB' },
+              { name: 'Instagram', url: 'https://instagram.com', label: 'IG' },
+              { name: 'YouTube', url: 'https://youtube.com', label: 'YT' },
+              { name: 'TikTok', url: 'https://tiktok.com', label: 'TK' },
+            ].map((social) => (
+              <a
+                key={social.name}
+                href={social.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={social.name}
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-slate-500 border border-slate-200 transition-all duration-200 hover:bg-emerald-50 hover:text-emerald-650 hover:text-emerald-600 text-xs font-bold"
+              >
+                {social.label}
+              </a>
+            ))}
           </div>
         </div>
       </div>

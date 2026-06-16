@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Review } from '@/types/product';
 import { reviewService } from '@/services/reviewService';
 import { RatingStars } from '../common/RatingStars';
@@ -22,7 +22,7 @@ export const ReviewSection: React.FC<ReviewSectionProps> = ({ productId, average
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
-  const fetchReviews = async () => {
+  const fetchReviews = useCallback(async () => {
     try {
       const data = await reviewService.getReviewsByProduct(productId);
       setReviews(data);
@@ -31,11 +31,11 @@ export const ReviewSection: React.FC<ReviewSectionProps> = ({ productId, average
     } finally {
       setLoading(false);
     }
-  };
+  }, [productId]);
 
   useEffect(() => {
     fetchReviews();
-  }, [productId]);
+  }, [fetchReviews]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

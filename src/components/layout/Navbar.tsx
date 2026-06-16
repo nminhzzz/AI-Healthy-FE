@@ -2,11 +2,10 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useCartStore } from '@/lib/stores/cartStore';
 import { useAuthStore } from '@/lib/stores/authStore';
 import Sidebar from './Sidebar';
-
 import { logout as apiLogout } from '@/services/authService';
 
 export default function Navbar() {
@@ -15,6 +14,7 @@ export default function Navbar() {
   const totalItems = useCartStore((s) => s.totalItems);
   const { user, isAuthenticated, logout: storeLogout } = useAuthStore();
   const router = useRouter();
+  const pathname = usePathname();
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -29,12 +29,10 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
-      // Gọi API để server xóa HttpOnly Cookie và chặn Token trong Redis
       await apiLogout();
     } catch (e) {
       console.error('Logout failed on server', e);
     } finally {
-      // Xóa trong RAM (Zustand)
       storeLogout();
       setUserMenuOpen(false);
       router.push('/login');
@@ -56,17 +54,34 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 w-full border-b border-slate-700/50 bg-slate-900/95 backdrop-blur-md shadow-lg shadow-black/20">
-        {/* Gradient accent line */}
-        <div className="h-[2px] w-full bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-600" />
+      <nav className="sticky top-0 z-50 w-full bg-white backdrop-blur-md shadow-sm">
+        
+        {/* Topbar: Promos (iHerb Style) */}
+        <div className="bg-slate-50 text-xs py-2 px-4">
+          <div className="mx-auto max-w-7xl flex justify-between items-center text-slate-655 text-slate-600">
+            <div className="flex items-center gap-4">
+              <span className="text-emerald-700 font-semibold flex items-center gap-1">
+                Khuyến mãi hè: Giảm giá lên đến 20%
+              </span>
+              <span className="hidden md:inline">|</span>
+              <span className="hidden md:inline">Miễn phí vận chuyển toàn quốc từ 500k</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <Link href="/chat" className="text-emerald-700 font-semibold hover:text-emerald-600 transition-colors flex items-center gap-1">
+                Tư vấn sức khỏe bằng AI (Miễn phí)
+              </Link>
+            </div>
+          </div>
+        </div>
 
+        {/* Main Bar */}
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Left — Hamburger + Logo */}
           <div className="flex items-center gap-3">
             {/* Mobile hamburger */}
             <button
               onClick={() => setMobileMenuOpen(true)}
-              className="lg:hidden rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
+              className="lg:hidden rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800"
               aria-label="Mở menu"
             >
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -76,17 +91,15 @@ export default function Navbar() {
 
             {/* Logo */}
             <Link href="/" className="group flex items-center gap-2">
-              <span className="text-2xl transition-transform duration-300 group-hover:scale-110">🌿</span>
-              <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-xl font-bold tracking-tight text-transparent">
+              <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-xl font-black tracking-tight text-transparent">
                 HealthShop AI
               </span>
             </Link>
           </div>
 
-          {/* Center — Search bar (hidden on mobile) */}
+          {/* Center — Search bar (iHerb Style) */}
           <div className="hidden flex-1 px-8 md:block lg:px-16">
             <div className="relative mx-auto max-w-xl">
-              {/* Magnifying glass icon */}
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
                 <svg
                   className="h-4 w-4 text-slate-400"
@@ -104,29 +117,27 @@ export default function Navbar() {
               </div>
               <input
                 type="text"
-                placeholder="Tìm kiếm sản phẩm..."
-                className="w-full rounded-full border border-slate-700/60 bg-slate-800/60 py-2.5 pl-11 pr-4 text-sm text-white placeholder-slate-400 outline-none transition-all duration-300 focus:border-emerald-500/50 focus:bg-slate-800 focus:ring-2 focus:ring-emerald-500/20"
+                placeholder="Tìm kiếm thực phẩm chức năng, thương hiệu, thành phần..."
+                className="w-full rounded-full bg-slate-100 py-2.5 pl-11 pr-4 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all duration-300 focus:bg-slate-100 focus:ring-2 focus:ring-emerald-500/20 shadow-inner"
               />
             </div>
           </div>
 
           {/* Right — Actions */}
-          <div className="flex items-center gap-2">
-            {/* Mobile search toggle */}
-            <button className="md:hidden rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white">
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-                />
-              </svg>
-            </button>
+          <div className="flex items-center gap-4">
+            
+            {/* AI Assistant Button - Glowing call-to-action */}
+            <Link
+              href="/chat"
+              className="relative hidden sm:flex items-center gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold py-2.5 px-5 rounded-full transition-all duration-300 shadow-md shadow-emerald-500/10 hover:scale-105"
+            >
+              TƯ VẤN AI
+            </Link>
 
             {/* Cart */}
             <Link
               href="/cart"
-              className="relative rounded-lg p-2 text-slate-300 transition-all duration-200 hover:bg-slate-800 hover:text-white"
+              className="relative rounded-lg p-2 text-slate-650 text-slate-600 transition-all duration-200 hover:bg-slate-100 hover:text-slate-800"
             >
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path
@@ -136,41 +147,41 @@ export default function Navbar() {
                 />
               </svg>
               {itemCount > 0 && (
-                <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-1 text-[10px] font-bold text-white shadow-lg shadow-emerald-500/30">
+                <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#f36b21] px-1 text-[10px] font-black text-white shadow-lg shadow-[#f36b21]/30">
                   {itemCount > 99 ? '99+' : itemCount}
                 </span>
               )}
             </Link>
 
-            {/* User */}
+            {/* User Account */}
             {isAuthenticated && initials ? (
               <div className="relative" ref={menuRef}>
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-xs font-bold text-white shadow-lg shadow-emerald-500/20 transition-transform duration-200 hover:scale-105"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-emerald-600 to-teal-700 text-xs font-bold text-white shadow-lg shadow-emerald-500/20 transition-transform duration-200 hover:scale-105"
                 >
                   {initials}
                 </button>
                 
                 {userMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-xl border border-slate-700 bg-slate-800 py-1 shadow-xl shadow-black/40 ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    <div className="px-4 py-3 border-b border-slate-700/50">
-                      <p className="text-sm font-medium text-white truncate">{user?.full_name || 'Khách hàng'}</p>
-                      <p className="text-xs text-slate-400 truncate">{user?.email}</p>
+                  <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-xl bg-white py-1 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                    <div className="px-4 py-3">
+                      <p className="text-sm font-medium text-slate-800 truncate">{user?.full_name || 'Khách hàng'}</p>
+                      <p className="text-xs text-slate-500 truncate">{user?.email}</p>
                     </div>
                     
                     <div className="py-1">
                       <Link
                         href="/profile"
                         onClick={() => setUserMenuOpen(false)}
-                        className="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+                        className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-800 transition-colors"
                       >
                         Thông tin tài khoản
                       </Link>
                       <Link
                         href="/orders"
                         onClick={() => setUserMenuOpen(false)}
-                        className="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+                        className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-800 transition-colors"
                       >
                         Đơn hàng của tôi
                       </Link>
@@ -179,17 +190,17 @@ export default function Navbar() {
                         <Link
                           href="/admin"
                           onClick={() => setUserMenuOpen(false)}
-                          className="block px-4 py-2 text-sm font-medium text-emerald-400 hover:bg-slate-700 hover:text-emerald-300 transition-colors"
+                          className="block px-4 py-2 text-sm font-medium text-emerald-600 hover:bg-slate-50 hover:text-emerald-700 transition-colors"
                         >
                           Trang quản trị (Admin)
                         </Link>
                       )}
                     </div>
                     
-                    <div className="border-t border-slate-700/50 py-1">
+                    <div className="py-1">
                       <button
                         onClick={handleLogout}
-                        className="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-slate-700 hover:text-red-300 transition-colors"
+                        className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-slate-50 hover:text-red-600 transition-colors"
                       >
                         Đăng xuất
                       </button>
@@ -200,11 +211,32 @@ export default function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className="hidden rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 transition-all duration-200 hover:scale-105 hover:shadow-emerald-500/40 sm:inline-flex"
+                className="hidden rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 px-5 py-2 text-sm font-semibold transition-all duration-200 sm:inline-flex"
               >
                 Đăng nhập
               </Link>
             )}
+          </div>
+        </div>
+
+        {/* Sub Bar (Categories & Brand links) */}
+        <div className="bg-slate-50 backdrop-blur-sm hidden lg:block shadow-inner">
+          <div className="mx-auto max-w-7xl px-8 py-3 flex gap-8 text-sm font-medium text-slate-600">
+            <Link href="/products" className={`hover:text-emerald-650 hover:text-emerald-750 transition-colors ${pathname === '/products' ? 'text-emerald-700 font-bold' : ''}`}>
+              Tất cả Sản phẩm
+            </Link>
+            <Link href="/chat" className={`hover:text-emerald-650 hover:text-emerald-750 transition-colors ${pathname === '/chat' ? 'text-emerald-700 font-bold' : ''}`}>
+              Bác sĩ AI Tư vấn
+            </Link>
+            <Link href="/#super-deals" className="hover:text-emerald-650 hover:text-emerald-750 transition-colors">
+              Khuyến Mãi Cực Sốc
+            </Link>
+            <Link href="/#best-sellers" className="hover:text-emerald-650 hover:text-emerald-750 transition-colors">
+              Sản Phẩm Bán Chạy
+            </Link>
+            <Link href="/#ai-recommendations" className="hover:text-emerald-650 hover:text-emerald-750 transition-colors">
+              Đề Xuất Bởi AI
+            </Link>
           </div>
         </div>
       </nav>

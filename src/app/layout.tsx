@@ -1,13 +1,7 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin", "vietnamese"],
-});
 
 export const metadata: Metadata = {
   title: "HealthShop AI - Sức khỏe thông minh",
@@ -24,8 +18,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-slate-950 text-white font-[family-name:var(--font-inter)]">
+    <html lang="vi" className="h-full antialiased">
+      <body className="min-h-full flex flex-col bg-white text-slate-800 font-[family-name:Times_New_Roman,Times,serif]">
         <AuthProvider>
           <Navbar />
           <main className="flex-1">{children}</main>

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Product, Category } from '@/types/product';
-import { productService } from '@/services/productService';
-import { uploadService } from '@/services/uploadService';
+import React, { useEffect, useState } from "react";
+import { Product, Category } from "@/types/product";
+import { productService } from "@/services/productService";
+import { uploadService } from "@/services/uploadService";
 
 interface ProductModalProps {
   isOpen: boolean;
@@ -12,20 +12,20 @@ interface ProductModalProps {
 }
 
 const initialForm = {
-  name: '',
-  slug: '',
-  sku: '',
-  brand: '',
+  name: "",
+  slug: "",
+  sku: "",
+  brand: "",
   price: 0,
   sale_price: 0,
   stock: 0,
   category_id: 0,
-  description: '',
-  ingredients: '',
-  usage_guide: '',
-  benefits: '',
-  warnings: '',
-  image_url: '',
+  description: "",
+  ingredients: "",
+  usage_guide: "",
+  benefits: "",
+  warnings: "",
+  image_url: "",
   is_active: true,
 };
 
@@ -45,17 +45,17 @@ export const ProductModal: React.FC<ProductModalProps> = ({
         name: product.name,
         slug: product.slug,
         sku: product.sku,
-        brand: product.brand || '',
+        brand: product.brand || "",
         price: product.price,
         sale_price: product.sale_price || 0,
         stock: product.stock,
         category_id: product.category_id,
-        description: product.description || '',
-        ingredients: product.ingredients || '',
-        usage_guide: product.usage_guide || '',
-        benefits: product.benefits || '',
-        warnings: product.warnings || '',
-        image_url: product.image_url || '',
+        description: product.description || "",
+        ingredients: product.ingredients || "",
+        usage_guide: product.usage_guide || "",
+        benefits: product.benefits || "",
+        warnings: product.warnings || "",
+        image_url: product.image_url || "",
         is_active: product.is_active,
       });
     } else {
@@ -76,7 +76,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
       setFormData((prev: any) => ({ ...prev, image_url: url }));
     } catch (err) {
       console.error(err);
-      alert('Lỗi tải ảnh lên Cloudinary');
+      alert("Lỗi tải ảnh lên Cloudinary");
     } finally {
       setUploading(false);
     }
@@ -97,7 +97,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
       onClose();
     } catch (err: any) {
       console.error(err);
-      alert(err.response?.data?.detail || 'Lỗi khi lưu sản phẩm');
+      alert(err.response?.data?.detail || "Lỗi khi lưu sản phẩm");
     }
   };
 
@@ -107,27 +107,38 @@ export const ProductModal: React.FC<ProductModalProps> = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl">
         <h2 className="text-xl font-bold mb-6 text-gray-800">
-          {product ? 'Sửa sản phẩm' : 'Thêm sản phẩm mới'}
+          {product ? "Sửa sản phẩm" : "Thêm sản phẩm mới"}
         </h2>
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Tên sản phẩm *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Tên sản phẩm *
+              </label>
               <input
                 type="text"
                 required
                 className="w-full border border-gray-300 rounded p-2 text-sm focus:border-blue-500 outline-none"
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Danh mục *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Danh mục *
+              </label>
               <select
                 required
                 className="w-full border border-gray-300 rounded p-2 text-sm focus:border-blue-500 outline-none"
                 value={formData.category_id}
-                onChange={(e) => setFormData({ ...formData, category_id: Number(e.target.value) })}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    category_id: Number(e.target.value),
+                  })
+                }
               >
                 <option value="">Chọn danh mục</option>
                 {categories.map((c) => (
@@ -138,33 +149,43 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">SKU *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                SKU *
+              </label>
               <input
                 type="text"
                 required
                 className="w-full border border-gray-300 rounded p-2 text-sm focus:border-blue-500 outline-none"
                 value={formData.sku}
-                onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, sku: e.target.value })
+                }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Giá cơ bản *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Giá cơ bản *
+              </label>
               <input
                 type="number"
                 required
                 min="0"
                 className="w-full border border-gray-300 rounded p-2 text-sm focus:border-blue-500 outline-none"
                 value={formData.price}
-                onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
+                onChange={(e) =>
+                  setFormData({ ...formData, price: Number(e.target.value) })
+                }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Giá khuyến mãi (Tùy chọn)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Giá khuyến mãi (Tùy chọn)
+              </label>
               <input
                 type="number"
                 min="0"
                 className="w-full border border-gray-300 rounded p-2 bg-emerald-50 text-sm focus:border-emerald-500 outline-none"
-                value={formData.sale_price || ''}
+                value={formData.sale_price || ""}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
@@ -174,23 +195,31 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Thương hiệu</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Thương hiệu
+              </label>
               <input
                 type="text"
                 className="w-full border border-gray-300 rounded p-2 text-sm focus:border-blue-500 outline-none"
                 value={formData.brand}
-                onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, brand: e.target.value })
+                }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Tồn kho (Stock) *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Tồn kho (Stock) *
+              </label>
               <input
                 type="number"
                 required
                 min="0"
                 className="w-full border border-gray-300 rounded p-2 bg-yellow-50 font-bold text-sm focus:border-yellow-500 outline-none"
                 value={formData.stock}
-                onChange={(e) => setFormData({ ...formData, stock: Number(e.target.value) })}
+                onChange={(e) =>
+                  setFormData({ ...formData, stock: Number(e.target.value) })
+                }
               />
             </div>
             <div className="flex flex-col justify-end pb-2">
@@ -199,7 +228,9 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                   type="checkbox"
                   className="mr-2 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   checked={formData.is_active}
-                  onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, is_active: e.target.checked })
+                  }
                 />
                 Cho phép bán sản phẩm
               </label>
@@ -207,14 +238,20 @@ export const ProductModal: React.FC<ProductModalProps> = ({
           </div>
 
           <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Hình ảnh sản phẩm</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Hình ảnh sản phẩm
+            </label>
             {formData.image_url && (
               <div className="mb-2 relative w-48 h-48 bg-gray-100 rounded overflow-hidden flex items-center justify-center border border-gray-200">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={formData.image_url} alt="Product Preview" className="object-contain max-h-full max-w-full" />
+                <img
+                  src={formData.image_url}
+                  alt="Product Preview"
+                  className="object-contain max-h-full max-w-full"
+                />
                 <button
                   type="button"
-                  onClick={() => setFormData({ ...formData, image_url: '' })}
+                  onClick={() => setFormData({ ...formData, image_url: "" })}
                   className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white rounded-full p-1.5 text-xs shadow"
                   title="Xóa ảnh"
                 >
@@ -224,7 +261,9 @@ export const ProductModal: React.FC<ProductModalProps> = ({
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs text-gray-500 mb-1">Tải ảnh lên</label>
+                <label className="block text-xs text-gray-500 mb-1">
+                  Tải ảnh lên
+                </label>
                 <input
                   type="file"
                   accept="image/*"
@@ -232,70 +271,98 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                   disabled={uploading}
                   className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 />
-                {uploading && <p className="text-sm text-blue-600 mt-1">Đang tải ảnh lên...</p>}
+                {uploading && (
+                  <p className="text-sm text-blue-600 mt-1">
+                    Đang tải ảnh lên...
+                  </p>
+                )}
               </div>
               <div>
-                <label className="block text-xs text-gray-500 mb-1">Hoặc dán URL hình ảnh</label>
+                <label className="block text-xs text-gray-500 mb-1">
+                  Hoặc dán URL hình ảnh
+                </label>
                 <input
                   type="text"
                   placeholder="https://example.com/image.jpg"
                   className="w-full border border-gray-300 rounded p-2 text-sm focus:border-blue-500 outline-none"
                   value={formData.image_url}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, image_url: e.target.value })
+                  }
                 />
               </div>
             </div>
           </div>
 
           <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Mô tả ngắn</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Mô tả ngắn
+            </label>
             <textarea
               className="w-full border border-gray-300 rounded p-2 text-sm focus:border-blue-500 outline-none"
               rows={2}
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Thành phần (Phục vụ AI)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Thành phần{" "}
+              </label>
               <textarea
                 className="w-full border border-gray-300 rounded p-2 text-sm focus:border-blue-500 outline-none"
                 rows={3}
                 placeholder="Ví dụ: Vitamin C 500mg, Zinc 15mg..."
-                value={formData.ingredients || ''}
-                onChange={(e) => setFormData({ ...formData, ingredients: e.target.value })}
+                value={formData.ingredients || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, ingredients: e.target.value })
+                }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Hướng dẫn sử dụng (Phục vụ AI)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Hướng dẫn sử dụng{" "}
+              </label>
               <textarea
                 className="w-full border border-gray-300 rounded p-2 text-sm focus:border-blue-500 outline-none"
                 rows={3}
                 placeholder="Ví dụ: Uống 1 viên sau ăn sáng..."
-                value={formData.usage_guide || ''}
-                onChange={(e) => setFormData({ ...formData, usage_guide: e.target.value })}
+                value={formData.usage_guide || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, usage_guide: e.target.value })
+                }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Công dụng nổi bật (Phục vụ AI)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Công dụng nổi bật{" "}
+              </label>
               <textarea
                 className="w-full border border-gray-300 rounded p-2 text-sm focus:border-blue-500 outline-none"
                 rows={3}
                 placeholder="Ví dụ: Tăng đề kháng, giảm mệt mỏi..."
-                value={formData.benefits || ''}
-                onChange={(e) => setFormData({ ...formData, benefits: e.target.value })}
+                value={formData.benefits || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, benefits: e.target.value })
+                }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Cảnh báo an toàn (Phục vụ AI)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Cảnh báo an toàn
+              </label>
               <textarea
                 className="w-full border border-gray-300 rounded p-2 text-sm focus:border-blue-500 outline-none"
                 rows={3}
                 placeholder="Ví dụ: Không dùng cho người cao huyết áp..."
-                value={formData.warnings || ''}
-                onChange={(e) => setFormData({ ...formData, warnings: e.target.value })}
+                value={formData.warnings || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, warnings: e.target.value })
+                }
               />
             </div>
           </div>
