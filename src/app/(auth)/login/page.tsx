@@ -91,7 +91,7 @@ export default function LoginPage() {
           </div>
 
           <div className="flex items-center justify-end">
-            <Link href="#" className="text-sm font-medium text-emerald-400 hover:text-emerald-300">
+            <Link href="/forgot-password" className="text-sm font-medium text-emerald-400 hover:text-emerald-300">
               Quên mật khẩu?
             </Link>
           </div>

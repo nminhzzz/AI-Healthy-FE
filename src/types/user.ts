@@ -5,6 +5,7 @@ export interface User {
   phone_number: string | null;
   role: 'USER' | 'ADMIN';
   is_active: boolean;
+  avatar_url?: string | null;
   created_at: string;
   updated_at: string;
 }

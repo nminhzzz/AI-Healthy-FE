@@ -124,16 +124,26 @@ export default function Footer() {
 
           {/* Social icons */}
           <div className="flex items-center gap-3">
-            {['Facebook', 'Instagram', 'YouTube', 'TikTok'].map((social) => (
-              <a
-                key={social}
-                href="#"
-                aria-label={social}
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-800 text-slate-400 ring-1 ring-slate-700/50 transition-all duration-200 hover:bg-emerald-500/10 hover:text-emerald-400 hover:ring-emerald-500/30"
-              >
-                <span className="text-xs font-bold">{social[0]}</span>
-              </a>
-            ))}
+            {['Facebook', 'Instagram', 'YouTube', 'TikTok'].map((social) => {
+              const urls: Record<string, string> = {
+                Facebook: 'https://facebook.com',
+                Instagram: 'https://instagram.com',
+                YouTube: 'https://youtube.com',
+                TikTok: 'https://tiktok.com',
+              };
+              return (
+                <a
+                  key={social}
+                  href={urls[social] || 'https://google.com'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social}
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-800 text-slate-400 ring-1 ring-slate-700/50 transition-all duration-200 hover:bg-emerald-500/10 hover:text-emerald-400 hover:ring-emerald-500/30"
+                >
+                  <span className="text-xs font-bold">{social[0]}</span>
+                </a>
+              );
+            })}
           </div>
         </div>
       </div>

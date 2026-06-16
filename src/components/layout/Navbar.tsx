@@ -177,7 +177,7 @@ export default function Navbar() {
                       
                       {user?.role === 'ADMIN' && (
                         <Link
-                          href="/admin/dashboard"
+                          href="/admin"
                           onClick={() => setUserMenuOpen(false)}
                           className="block px-4 py-2 text-sm font-medium text-emerald-400 hover:bg-slate-700 hover:text-emerald-300 transition-colors"
                         >

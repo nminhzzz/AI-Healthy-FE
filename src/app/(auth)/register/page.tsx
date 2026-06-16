@@ -95,11 +95,11 @@ export default function RegisterPage() {
           <div className="flex items-center">
             <p className="text-xs text-slate-400">
               Bằng việc đăng ký, bạn đồng ý với{' '}
-              <Link href="#" className="text-emerald-400 hover:underline">
+              <Link href="/terms" className="text-emerald-400 hover:underline">
                 Điều khoản dịch vụ
               </Link>{' '}
               và{' '}
-              <Link href="#" className="text-emerald-400 hover:underline">
+              <Link href="/privacy" className="text-emerald-400 hover:underline">
                 Chính sách bảo mật
               </Link>{' '}
               của chúng tôi.
