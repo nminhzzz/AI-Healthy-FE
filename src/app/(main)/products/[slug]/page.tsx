@@ -7,11 +7,18 @@ import { Product } from "@/types/product";
 import { productService } from "@/services/productService";
 import { RatingStars } from "@/components/common/RatingStars";
 import { ReviewSection } from "@/components/product/ReviewSection";
+import { useCartStore } from "@/lib/stores/cartStore";
+import { useAuthStore } from "@/lib/stores/authStore";
+import { cartService } from "@/services/cartService";
 
 export default function ProductDetailPage() {
   const { slug } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [qty, setQty] = useState(1);
+  const [isAdded, setIsAdded] = useState(false);
+  const addItem = useCartStore((s) => s.addItem);
+  const { isAuthenticated } = useAuthStore();
 
   useEffect(() => {
     if (slug) {
@@ -22,6 +29,28 @@ export default function ProductDetailPage() {
         .finally(() => setLoading(false));
     }
   }, [slug]);
+
+  const handleAddToCart = async () => {
+    if (!product) return;
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.sale_price || product.price,
+      quantity: qty,
+      image_url: product.image_url || '',
+    });
+
+    if (isAuthenticated) {
+      try {
+        await cartService.addToCart(product.id, qty);
+      } catch (err) {
+        console.error('Lỗi khi đồng bộ sản phẩm vào giỏ hàng Redis:', err);
+      }
+    }
+
+    setIsAdded(true);
+    setTimeout(() => setIsAdded(false), 2000);
+  };
 
   if (loading) return <div className="text-center py-20">Đang tải...</div>;
   if (!product)
@@ -102,19 +131,21 @@ export default function ProductDetailPage() {
             <div className="w-24">
               <input
                 type="number"
-                defaultValue={1}
+                value={qty}
+                onChange={(e) => setQty(Math.max(1, Number(e.target.value)))}
                 min={1}
                 max={product.stock}
-                className="w-full h-12 border border-gray-300 rounded text-center font-bold focus:outline-none focus:border-[#458500]"
+                className="w-full h-12 bg-slate-100 rounded text-center font-bold focus:outline-none"
                 disabled={product.stock === 0}
               />
             </div>
             <button
+              onClick={handleAddToCart}
               className={`flex-grow h-12 font-bold rounded text-white text-lg transition-colors
-                ${product.stock > 0 ? "bg-[#f36b21] hover:bg-[#d95a1a]" : "bg-gray-400 cursor-not-allowed"}`}
+                ${product.stock > 0 ? (isAdded ? "bg-emerald-600" : "bg-[#f36b21] hover:bg-[#d95a1a]") : "bg-gray-400 cursor-not-allowed"}`}
               disabled={product.stock === 0}
             >
-              {product.stock > 0 ? "Thêm vào giỏ hàng" : "Hết hàng"}
+              {product.stock > 0 ? (isAdded ? "Đã thêm!" : "Thêm vào giỏ hàng") : "Hết hàng"}
             </button>
           </div>
         </div>

@@ -4,6 +4,8 @@ import Image from 'next/image';
 import { Product } from '@/types/product';
 import { RatingStars } from '../common/RatingStars';
 import { useCartStore } from '@/lib/stores/cartStore';
+import { useAuthStore } from '@/lib/stores/authStore';
+import { cartService } from '@/services/cartService';
 
 interface ProductCardProps {
   product: Product;
@@ -12,7 +14,7 @@ interface ProductCardProps {
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const addItem = useCartStore((s) => s.addItem);
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     addItem({
@@ -22,6 +24,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       quantity: 1,
       image_url: product.image_url || '',
     });
+
+    const { isAuthenticated } = useAuthStore.getState();
+    if (isAuthenticated) {
+      try {
+        await cartService.addToCart(product.id, 1);
+      } catch (err) {
+        console.error('Lỗi khi đồng bộ sản phẩm vào giỏ hàng Redis:', err);
+      }
+    }
   };
 
   return (

@@ -11,6 +11,8 @@ export interface CartItem {
 interface CartState {
   items: CartItem[];
   isOpen: boolean;
+  addedTrigger: number;
+  lastAddedQty: number;
 
   addItem: (item: CartItem) => void;
   removeItem: (id: number) => void;
@@ -26,13 +28,19 @@ interface CartState {
 export const useCartStore = create<CartState>((set, get) => ({
   items: [],
   isOpen: false,
+  addedTrigger: 0,
+  lastAddedQty: 0,
 
   addItem: (item) =>
     set((state) => {
       const existing = state.items.find((i) => i.id === item.id);
+      const nextTrigger = state.addedTrigger + 1;
+      const addedQty = item.quantity;
 
       if (existing) {
         return {
+          addedTrigger: nextTrigger,
+          lastAddedQty: addedQty,
           items: state.items.map((i) =>
             i.id === item.id
               ? { ...i, quantity: i.quantity + item.quantity }
@@ -41,7 +49,11 @@ export const useCartStore = create<CartState>((set, get) => ({
         };
       }
 
-      return { items: [...state.items, item] };
+      return { 
+        addedTrigger: nextTrigger,
+        lastAddedQty: addedQty,
+        items: [...state.items, item] 
+      };
     }),
 
   removeItem: (id) =>

@@ -14,6 +14,26 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const totalItems = useCartStore((s) => s.totalItems);
   const { user, isAuthenticated, logout: storeLogout } = useAuthStore();
+
+  const addedTrigger = useCartStore((s) => s.addedTrigger);
+  const lastAddedQty = useCartStore((s) => s.lastAddedQty);
+  const [showPlusOne, setShowPlusOne] = useState(false);
+  const [animateCart, setAnimateCart] = useState(false);
+
+  useEffect(() => {
+    if (addedTrigger > 0) {
+      setShowPlusOne(true);
+      setAnimateCart(true);
+
+      const timer1 = setTimeout(() => setShowPlusOne(false), 1000);
+      const timer2 = setTimeout(() => setAnimateCart(false), 500);
+
+      return () => {
+        clearTimeout(timer1);
+        clearTimeout(timer2);
+      };
+    }
+  }, [addedTrigger]);
   const router = useRouter();
   const pathname = usePathname();
   const menuRef = useRef<HTMLDivElement>(null);
@@ -168,7 +188,9 @@ export default function Navbar() {
             {/* Cart */}
             <Link
               href="/cart"
-              className="relative rounded-lg p-2 text-slate-650 text-slate-600 transition-all duration-200 hover:bg-slate-100 hover:text-slate-800"
+              className={`relative rounded-lg p-2 text-slate-600 transition-all duration-200 hover:bg-slate-100 hover:text-slate-800 ${
+                animateCart ? 'animate-bounce scale-110 text-emerald-600' : ''
+              }`}
             >
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path
@@ -180,6 +202,11 @@ export default function Navbar() {
               {itemCount > 0 && (
                 <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#f36b21] px-1 text-[10px] font-black text-white shadow-lg shadow-[#f36b21]/30">
                   {itemCount > 99 ? '99+' : itemCount}
+                </span>
+              )}
+              {showPlusOne && (
+                <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-sm font-black text-[#f36b21] animate-ping z-30 font-mono">
+                  +{lastAddedQty}
                 </span>
               )}
             </Link>
