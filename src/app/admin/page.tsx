@@ -40,9 +40,9 @@ export default function AdminDashboardPage() {
 
         // 3. Lấy thông tin Đơn hàng (Try-Catch)
         try {
-          const resOrders = await apiClient.get('/admin/orders');
+          const resOrders = await apiClient.get('/admin/orders/');
           ordersData = resOrders.data || [];
-          revenue = ordersData.reduce((acc, order) => acc + (order.total_amount || 0), 0);
+          revenue = ordersData.reduce((acc, order) => acc + (order.total_price || 0), 0);
         } catch (error) {
           console.log('Order API chưa sẵn sàng:', error);
         }
@@ -118,20 +118,38 @@ export default function AdminDashboardPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {recentOrders.map((order, i) => (
-                    <tr key={i}>
-                      <td className="py-3 text-sm font-medium text-blue-600">#{order.id}</td>
-                      <td className="py-3 text-sm text-gray-600">{order.user_id}</td>
-                      <td className="py-3 text-sm">
-                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                          {order.status || 'Chờ xử lý'}
-                        </span>
-                      </td>
-                      <td className="py-3 text-sm text-right font-bold text-gray-800">
-                        {order.total_amount?.toLocaleString('vi-VN')}₫
-                      </td>
-                    </tr>
-                  ))}
+                  {recentOrders.map((order, i) => {
+                    const statusBadgeClass = 
+                      order.status === 'PENDING' ? 'bg-amber-100 text-amber-800' :
+                      order.status === 'PAID' ? 'bg-blue-100 text-blue-800' :
+                      order.status === 'SHIPPING' ? 'bg-indigo-100 text-indigo-800' :
+                      order.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-800' :
+                      'bg-rose-100 text-rose-800';
+
+                    const statusLabel = 
+                      order.status === 'PENDING' ? 'Chờ duyệt' :
+                      order.status === 'PAID' ? 'Đã thanh toán' :
+                      order.status === 'SHIPPING' ? 'Đang giao' :
+                      order.status === 'COMPLETED' ? 'Hoàn thành' :
+                      'Đã hủy';
+
+                    return (
+                      <tr key={i}>
+                        <td className="py-3 text-sm font-semibold text-blue-600">{order.order_code}</td>
+                        <td className="py-3 text-sm font-medium text-gray-600">
+                          {order.receiver_name || `Khách hàng #${order.user_id}`}
+                        </td>
+                        <td className="py-3 text-sm">
+                          <span className={`px-2 py-0.5 text-xs font-bold rounded-full ${statusBadgeClass}`}>
+                            {statusLabel}
+                          </span>
+                        </td>
+                        <td className="py-3 text-sm text-right font-black text-slate-800">
+                          {order.total_price?.toLocaleString('vi-VN')}₫
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             )}

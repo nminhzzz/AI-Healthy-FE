@@ -243,6 +243,13 @@ export default function Navbar() {
                       >
                         Đơn hàng của tôi
                       </Link>
+                      <Link
+                        href="/wishlist"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-800 transition-colors"
+                      >
+                        Sản phẩm yêu thích
+                      </Link>
                       
                       {user?.role === 'ADMIN' && (
                         <Link

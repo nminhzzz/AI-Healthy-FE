@@ -25,10 +25,22 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         console.log("[AuthProvider] User profile loaded:", userData.email);
         
         setAuth(data.access_token, userData);
+        
+        // Fetch wishlist items on startup
+        try {
+          const { useWishlistStore } = await import('@/lib/stores/wishlistStore');
+          await useWishlistStore.getState().fetchWishlist();
+        } catch (wishErr) {
+          console.error("[AuthProvider] Failed to fetch wishlist:", wishErr);
+        }
       } catch (error: any) {
         console.error("[AuthProvider] Failed to initialize session:", error?.response?.data || error.message);
         // Quan trọng: Nếu refresh thất bại, phải xóa sạch rác trong Zustand (đã bị persist từ phiên trước)
         logout();
+        try {
+          const { useWishlistStore } = await import('@/lib/stores/wishlistStore');
+          useWishlistStore.getState().clearWishlist();
+        } catch {}
       }
     };
 

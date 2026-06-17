@@ -22,4 +22,14 @@ export const userService = {
     const response = await apiClient.delete(`/admin/users/${id}`);
     return response.data;
   },
+
+  updateProfile: async (data: { full_name?: string; phone_number?: string; avatar_url?: string }) => {
+    const response = await apiClient.put<User>('/users/profile', data);
+    return response.data;
+  },
+
+  changePassword: async (data: any) => {
+    const response = await apiClient.put('/users/password', data);
+    return response.data;
+  },
 };

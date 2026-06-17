@@ -5,6 +5,7 @@ import { Product } from '@/types/product';
 import { RatingStars } from '../common/RatingStars';
 import { useCartStore } from '@/lib/stores/cartStore';
 import { useAuthStore } from '@/lib/stores/authStore';
+import { useWishlistStore } from '@/lib/stores/wishlistStore';
 import { cartService } from '@/services/cartService';
 
 interface ProductCardProps {
@@ -13,6 +14,9 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const addItem = useCartStore((s) => s.addItem);
+  const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
+  const isLiked = useWishlistStore((s) => s.isLiked(product.id));
+  const { isAuthenticated } = useAuthStore();
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -25,7 +29,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       image_url: product.image_url || '',
     });
 
-    const { isAuthenticated } = useAuthStore.getState();
     if (isAuthenticated) {
       try {
         await cartService.addToCart(product.id, 1);
@@ -33,6 +36,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         console.error('Lỗi khi đồng bộ sản phẩm vào giỏ hàng Redis:', err);
       }
     }
+  };
+
+  const handleToggleWishlist = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isAuthenticated) {
+      alert('Vui lòng đăng nhập để lưu sản phẩm yêu thích.');
+      return;
+    }
+    await toggleWishlist(product.id);
   };
 
   return (
@@ -45,6 +58,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               SALE
             </span>
           )}
+
+          {/* Wishlist Button Overlay */}
+          <button
+            onClick={handleToggleWishlist}
+            className={`absolute top-2 right-2 z-10 px-2 py-1 rounded text-[10px] font-bold uppercase transition-colors cursor-pointer border-none outline-none ${
+              isLiked
+                ? 'bg-rose-100 text-rose-800'
+                : 'bg-slate-200 text-slate-700 hover:bg-slate-350'
+            }`}
+          >
+            {isLiked ? 'Đã lưu' : 'Lưu'}
+          </button>
+
           {product.image_url ? (
             <Image 
               src={product.image_url} 
