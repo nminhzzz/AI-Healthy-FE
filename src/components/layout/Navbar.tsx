@@ -11,6 +11,7 @@ import { logout as apiLogout } from '@/services/authService';
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const totalItems = useCartStore((s) => s.totalItems);
   const { user, isAuthenticated, logout: storeLogout } = useAuthStore();
   const router = useRouter();
@@ -26,6 +27,28 @@ export default function Navbar() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Đồng bộ từ khóa tìm kiếm từ URL (chỉ chạy ở phía client)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const searchParam = params.get('search');
+      if (searchParam) {
+        setSearchQuery(searchParam);
+      } else {
+        setSearchQuery('');
+      }
+    }
+  }, [pathname]);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      router.push('/products');
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -99,7 +122,7 @@ export default function Navbar() {
 
           {/* Center — Search bar (iHerb Style) */}
           <div className="hidden flex-1 px-8 md:block lg:px-16">
-            <div className="relative mx-auto max-w-xl">
+            <form onSubmit={handleSearchSubmit} className="relative mx-auto max-w-xl">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
                 <svg
                   className="h-4 w-4 text-slate-400"
@@ -117,10 +140,18 @@ export default function Navbar() {
               </div>
               <input
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Tìm kiếm thực phẩm chức năng, thương hiệu, thành phần..."
-                className="w-full rounded-full bg-slate-100 py-2.5 pl-11 pr-4 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all duration-300 focus:bg-slate-100 focus:ring-2 focus:ring-emerald-500/20 shadow-inner"
+                className="w-full rounded-full bg-slate-100 py-2.5 pl-11 pr-24 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all duration-300 focus:bg-slate-100 focus:ring-2 focus:ring-emerald-500/20 shadow-inner"
               />
-            </div>
+              <button
+                type="submit"
+                className="absolute inset-y-1.5 right-1.5 flex items-center justify-center rounded-full bg-emerald-600 hover:bg-emerald-700 text-xs font-bold text-white px-5 transition-all duration-200 active:scale-95 shadow-sm"
+              >
+                Tìm kiếm
+              </button>
+            </form>
           </div>
 
           {/* Right — Actions */}

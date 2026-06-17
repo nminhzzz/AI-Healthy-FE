@@ -3,7 +3,15 @@ import { Product } from '@/types/product';
 
 export const productService = {
   // Public
-  getProducts: async (params?: { skip?: number; limit?: number; category_id?: number; search?: string }) => {
+  getProducts: async (params?: { 
+    skip?: number; 
+    limit?: number; 
+    category_id?: number; 
+    search?: string;
+    price_min?: number;
+    price_max?: number;
+    sort_by?: string;
+  }) => {
     const response = await apiClient.get<Product[]>('/products', { params });
     return response.data;
   },
@@ -27,6 +35,24 @@ export const productService = {
   },
   adminDeleteProduct: async (id: number) => {
     const response = await apiClient.delete(`/admin/products/${id}`);
+    return response.data;
+  },
+  searchProducts: async (params?: {
+    q?: string;
+    category_id?: number;
+    price_min?: number;
+    price_max?: number;
+    brand?: string;
+    sort_by?: string;
+    page?: number;
+    limit?: number;
+  }) => {
+    const response = await apiClient.get<{
+      total: number;
+      page: number;
+      limit: number;
+      items: Product[];
+    }>('/products/search', { params });
     return response.data;
   },
 };

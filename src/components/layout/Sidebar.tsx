@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -18,6 +19,9 @@ const categories = [
 ];
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
+
   // Lock body scroll when sidebar is open
   useEffect(() => {
     if (isOpen) {
@@ -29,6 +33,16 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       document.body.style.overflow = '';
     };
   }, [isOpen]);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onClose();
+    if (searchQuery.trim()) {
+      router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      router.push('/products');
+    }
+  };
 
   return (
     <>
@@ -68,7 +82,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
         {/* Search (mobile) */}
         <div className="border-b border-slate-700/50 p-4">
-          <div className="relative">
+          <form onSubmit={handleSearchSubmit} className="relative">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
               <svg className="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
@@ -76,10 +90,18 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             </div>
             <input
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Tìm kiếm sản phẩm..."
-              className="w-full rounded-xl border border-slate-600/50 bg-slate-700/50 py-2.5 pl-10 pr-4 text-sm text-white placeholder-slate-400 outline-none transition-all focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20"
+              className="w-full rounded-xl border border-slate-600/50 bg-slate-700/50 py-2.5 pl-10 pr-20 text-sm text-white placeholder-slate-400 outline-none transition-all focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20"
             />
-          </div>
+            <button
+              type="submit"
+              className="absolute inset-y-1.5 right-1.5 flex items-center justify-center rounded-lg bg-emerald-500 hover:bg-emerald-600 text-xs font-bold text-white px-4 transition-all duration-200 active:scale-95 shadow-sm"
+            >
+              Tìm
+            </button>
+          </form>
         </div>
 
         {/* Category list */}
